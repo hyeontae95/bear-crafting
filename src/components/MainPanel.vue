@@ -4,6 +4,7 @@ import { MasterDatabase } from "../data/MasterDatabase.js";
 import SimulationModal from "./SimulationModal.vue";
 import { useQueue } from "../composables/useQueue.js";
 import { useFavorites } from "../composables/useFavorites.js";
+import { getItemImage } from '../data/imageMap.js'
 
 const props = defineProps({
   category: { type: Object, required: true },
@@ -125,6 +126,16 @@ const modalTier = computed(() => selectedItem.value?._tier || props.category.tie
         @click="handleItemClick(item)"
       >
         <div class="card-top">
+          <div class="item-image-wrap">
+            <img
+              v-if="getItemImage(item.itemName)"
+              :src="getItemImage(item.itemName)"
+              :alt="item.itemName"
+              class="item-image"
+              @error="$event.target.style.display='none'"
+            />
+            <div v-else class="item-image-placeholder">📦</div>
+          </div>
           <div class="item-name">{{ item.itemName }}</div>
           <button
             class="star-btn"
@@ -332,4 +343,25 @@ const modalTier = computed(() => selectedItem.value?._tier || props.category.tie
   background: var(--accent);
   color: white;
 }
+
+.item-image-wrap {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.item-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  margin-bottom: 4px;
+}
+.item-image-placeholder {
+  font-size: 12px;
+  opacity: 0.4;
+}
+
 </style>

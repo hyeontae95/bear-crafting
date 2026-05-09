@@ -3,6 +3,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { simulateAttempts, getCompletionProbability } from "../utils/simulator.js";
 import OutcomeChart from "./OutcomeChart.vue";
 import { findItemByName } from "../utils/searchHelper.js";
+import { getItemImage } from '../data/imageMap.js'
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -251,7 +252,16 @@ const formatStacks = (count) => {
   <div class="modal-overlay">
     <div class="modal">
       <header class="modal-header">
-        <h2>{{ item.itemName }}</h2>
+        <div class="header-title">
+          <img
+            v-if="getItemImage(item.itemName)"
+            :src="getItemImage(item.itemName)"
+            :alt="item.itemName"
+            class="header-image"
+            @error="$event.target.style.display='none'"
+          />
+          <h2>{{ item.itemName }}</h2>
+        </div>
         <button class="close-btn" @click="emit('close')">✕</button>
       </header>
 
@@ -363,6 +373,14 @@ const formatStacks = (count) => {
                   >
                     {{ sourceCategoryLabel(m.sourceCategory) }}
                   </span>
+                  <img
+                    v-if="getItemImage(m.materialName)"
+                    :src="getItemImage(m.materialName)"
+                    :alt="m.materialName"
+                    class="material-image"
+                    @error="$event.target.style.display='none'"
+                  />
+                  <span v-else class="material-image-placeholder">📦</span>
                   <span class="material-name">{{ m.materialName }}</span>
                   <span class="material-qty">{{ formatStacks(m.totalRequired) }}</span>
                   <button
@@ -674,5 +692,42 @@ const formatStacks = (count) => {
 /* material-row 그리드 수정 - 버튼 자리 추가 */
 .material-row {
   grid-template-columns: 64px 1fr auto auto !important;
+}
+
+/* 모달 헤더 이미지 */
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.header-image {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.material-image-wrap,
+.material-image,
+.material-image-placeholder {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.material-image {
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.material-image-placeholder {
+  font-size: 11px;
+  opacity: 0.3;
+}
+
+/* material-row 그리드 수정 (이미지 칸 추가) */
+.material-row {
+  grid-template-columns: 64px 24px 1fr auto auto !important;
 }
 </style>

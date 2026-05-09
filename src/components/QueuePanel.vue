@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useQueue } from '../composables/useQueue.js'
 import { aggregateMaterials } from '../utils/materialAggregator.js'
 import { MasterDatabase } from '../data/MasterDatabase.js'
+import { getItemImage } from '../data/imageMap.js'
 
 const { queue, setQuantity, setChances, remove, clear } = useQueue()
 
@@ -154,6 +155,13 @@ const formatStacks = (count) => {
           <!-- 헤더 -->
           <div class="queue-header" @click="toggleExpand(q.itemName)">
             <div class="expand-arrow">{{ expandedItem === q.itemName ? '▼' : '▶' }}</div>
+            <img
+              v-if="getItemImage(q.itemName)"
+              :src="getItemImage(q.itemName)"
+              :alt="q.itemName"
+              class="queue-item-image"
+              @error="$event.target.style.display='none'"
+            />
             <div class="item-name">{{ q.itemName }}</div>
             <div class="qty-control" @click.stop>
               <button class="qty-btn" @click="setQuantity(q.itemName, q.quantity - 1)">−</button>
@@ -225,6 +233,14 @@ const formatStacks = (count) => {
             :key="m.materialName"
             class="material-row"
           >
+            <img
+              v-if="getItemImage(m.materialName)"
+              :src="getItemImage(m.materialName)"
+              :alt="m.materialName"
+              class="mat-image"
+              @error="$event.target.style.display='none'"
+            />
+            <span v-else class="mat-image-placeholder">📦</span>
             <span class="material-name">{{ m.materialName }}</span>
             <span class="material-qty">{{ formatStacks(m.totalRequired) }}</span>
           </div>
@@ -456,4 +472,45 @@ const formatStacks = (count) => {
 }
 .material-name { color: var(--text-primary); }
 .material-qty { color: var(--text-secondary); font-weight: 600; }
+
+/* 큐 항목 이미지 */
+.queue-item-image {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+/* 재료 이미지 */
+.mat-image,
+.mat-image-placeholder {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mat-image {
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.mat-image-placeholder {
+  font-size: 10px;
+  opacity: 0.3;
+}
+
+/* queue-header 그리드 수정 (이미지 칸 추가) */
+.queue-header {
+  grid-template-columns: 16px 24px 1fr auto auto !important;
+}
+
+/* 재료 row 수정 (이미지 칸 추가) */
+.material-row {
+  display: grid !important;
+  grid-template-columns: 20px 1fr auto !important;
+  gap: 6px;
+  align-items: center;
+}
 </style>

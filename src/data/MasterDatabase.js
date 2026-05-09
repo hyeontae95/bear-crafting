@@ -484,7 +484,7 @@ export const MasterDatabase = {
                     { materialName: "실종된 사냥꾼 고글", requiredQuantity: 2, sourceCategory: "hunter" },
                     { materialName: "공예품 끌", requiredQuantity: 1, sourceCategory: "blacksmith" },
                     { materialName: "반짝수", requiredQuantity: 2, sourceCategory: "blacksmith" },
-                    { materialName: "야생사냥꾼 증표", requiredQuantity: 1, sourceCategory: "hunter" }
+                    { materialName: "야생사냥꾼 증표 I", requiredQuantity: 1, sourceCategory: "hunter" }
                 ]
             },
             {
@@ -497,7 +497,7 @@ export const MasterDatabase = {
                     { materialName: "실종된 사냥꾼 고글", requiredQuantity: 2, sourceCategory: "hunter" },
                     { materialName: "공예품 끌", requiredQuantity: 1, sourceCategory: "blacksmith" },
                     { materialName: "거친 종이", requiredQuantity: 2, sourceCategory: "blacksmith" },
-                    { materialName: "야생사냥꾼 증표", requiredQuantity: 1, sourceCategory: "hunter" }
+                    { materialName: "야생사냥꾼 증표 I", requiredQuantity: 1, sourceCategory: "hunter" }
                 ]
             }
         ],
@@ -538,7 +538,7 @@ export const MasterDatabase = {
                     { materialName: "고대의 맘모스 뿔", requiredQuantity: 2, sourceCategory: "hunter" },
                     { materialName: "공예품 끌", requiredQuantity: 2, sourceCategory: "blacksmith" },
                     { materialName: "연마가루", requiredQuantity: 2, sourceCategory: "blacksmith" },
-                    { materialName: "야생사냥꾼 증표II", requiredQuantity: 1, sourceCategory: "hunter" }
+                    { materialName: "야생사냥꾼 증표 II", requiredQuantity: 1, sourceCategory: "hunter" }
                 ]
             },
             {
