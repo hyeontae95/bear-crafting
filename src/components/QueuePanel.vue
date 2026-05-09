@@ -117,6 +117,13 @@ const categoryMap = {
 }
 const sourceCategoryLabel = (cat) => categoryMap[cat] || cat
 const sourceCategoryColor = (cat) => `var(--job-${cat})`
+const formatStacks = (count) => {
+  if (count < 64) return `${count}개`
+  const stacks = Math.floor(count / 64)
+  const remainder = count % 64
+  if (remainder === 0) return `${count.toLocaleString()}개 (${stacks}세트)`
+  return `${count.toLocaleString()}개 (${stacks}세트 ${remainder}개)`
+}
 </script>
 
 <template>
@@ -219,7 +226,7 @@ const sourceCategoryColor = (cat) => `var(--job-${cat})`
             class="material-row"
           >
             <span class="material-name">{{ m.materialName }}</span>
-            <span class="material-qty">{{ m.totalRequired.toLocaleString() }}</span>
+            <span class="material-qty">{{ formatStacks(m.totalRequired) }}</span>
           </div>
         </div>
       </div>
