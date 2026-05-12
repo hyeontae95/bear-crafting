@@ -1,11 +1,14 @@
 <script setup>
 import { ref, computed } from "vue";
 import { searchItems } from "../utils/searchHelper.js";
+import SettingsModal from "./SettingsModal.vue";
 
 const props = defineProps({
   currentCategory: { type: Object, required: true },
 });
 const emit = defineEmits(["select", "search-select"]);
+
+const showSettings = ref(false);
 
 // 카테고리 메뉴
 const menu = [
@@ -69,18 +72,15 @@ const clearSearch = () => {
         <div class="title-main">Crafting</div>
         <div class="title-sub">Calculator</div>
       </div>
+      <button class="settings-btn" @click="showSettings = true" title="확률 설정">
+        ⚙️
+      </button>
     </div>
-
     <!-- 검색바 -->
     <div class="search-wrap">
       <div class="search-box">
         <span class="search-icon">🔍</span>
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="아이템 / 재료 검색..."
-          class="search-input"
-        />
+        <input v-model="searchQuery" type="text" placeholder="아이템 / 재료 검색..." class="search-input" />
         <button v-if="isSearching" class="clear-btn" @click="clearSearch">✕</button>
       </div>
     </div>
@@ -89,12 +89,7 @@ const clearSearch = () => {
     <div v-if="isSearching" class="search-results">
       <div class="results-label">검색 결과 {{ searchResults.length }}건</div>
       <div v-if="searchResults.length === 0" class="no-results">결과 없음</div>
-      <button
-        v-for="(entry, idx) in searchResults"
-        :key="idx"
-        class="result-item"
-        @click="handleSearchClick(entry)"
-      >
+      <button v-for="(entry, idx) in searchResults" :key="idx" class="result-item" @click="handleSearchClick(entry)">
         <div class="result-main">
           <span class="result-name">{{ entry.itemName }}</span>
           <span v-if="entry.matchType === 'material'" class="material-hint">
@@ -115,20 +110,16 @@ const clearSearch = () => {
           {{ section.label }}
         </div>
         <div class="tier-list">
-          <button
-            v-for="tier in section.tiers"
-            :key="tier.key"
-            class="tier-btn"
-            :class="{ active: isActive(section.job, tier.key) }"
-            :style="{ '--job-color': section.color }"
-            @click="emit('select', { job: section.job, tier: tier.key })"
-          >
+          <button v-for="tier in section.tiers" :key="tier.key" class="tier-btn"
+            :class="{ active: isActive(section.job, tier.key) }" :style="{ '--job-color': section.color }"
+            @click="emit('select', { job: section.job, tier: tier.key })">
             {{ tier.label }}
           </button>
         </div>
       </div>
     </nav>
   </aside>
+  <SettingsModal v-model="showSettings" />
 </template>
 
 <style scoped>
@@ -151,10 +142,12 @@ const clearSearch = () => {
 .logo {
   font-size: 28px;
 }
+
 .title-main {
   font-size: 16px;
   font-weight: 700;
 }
+
 .title-sub {
   font-size: 12px;
   color: var(--text-tertiary);
@@ -165,6 +158,7 @@ const clearSearch = () => {
   padding: 0 12px 12px;
   border-bottom: 1px solid var(--border);
 }
+
 .search-box {
   display: flex;
   align-items: center;
@@ -175,6 +169,7 @@ const clearSearch = () => {
   border: 1px solid transparent;
   transition: border-color 0.15s;
 }
+
 .search-box:focus-within {
   border-color: var(--accent);
 }
@@ -183,6 +178,7 @@ const clearSearch = () => {
   font-size: 13px;
   opacity: 0.6;
 }
+
 .search-input {
   flex: 1;
   background: transparent;
@@ -191,6 +187,7 @@ const clearSearch = () => {
   font-size: 13px;
   min-width: 0;
 }
+
 .search-input::placeholder {
   color: var(--text-tertiary);
 }
@@ -204,6 +201,7 @@ const clearSearch = () => {
   border-radius: 4px;
   flex-shrink: 0;
 }
+
 .clear-btn:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
@@ -215,6 +213,7 @@ const clearSearch = () => {
   overflow-y: auto;
   padding: 12px 8px;
 }
+
 .results-label {
   font-size: 10px;
   color: var(--text-tertiary);
@@ -223,12 +222,14 @@ const clearSearch = () => {
   padding: 0 8px 8px;
   font-weight: 600;
 }
+
 .no-results {
   padding: 20px;
   text-align: center;
   color: var(--text-tertiary);
   font-size: 12px;
 }
+
 .result-item {
   width: 100%;
   background: transparent;
@@ -240,40 +241,49 @@ const clearSearch = () => {
   gap: 4px;
   margin-bottom: 2px;
 }
+
 .result-item:hover {
   background: var(--bg-hover);
 }
+
 .result-main {
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
+
 .result-name {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
 }
+
 .material-hint {
   font-size: 11px;
   color: var(--accent);
 }
+
 .result-sub {
   display: flex;
   gap: 6px;
   font-size: 10px;
 }
+
 .result-job {
   padding: 2px 6px;
   border-radius: 3px;
   color: white;
   font-weight: 600;
 }
+
 .result-job.blacksmith {
   background: var(--job-blacksmith);
 }
+
 .result-job.crafter {
   background: var(--job-crafter);
 }
+
 .result-tier {
   color: var(--text-tertiary);
 }
@@ -284,9 +294,11 @@ const clearSearch = () => {
   overflow-y: auto;
   padding: 16px 12px;
 }
+
 .section {
   margin-bottom: 24px;
 }
+
 .section-label {
   font-size: 16px;
   font-weight: 700;
@@ -294,11 +306,13 @@ const clearSearch = () => {
   text-transform: uppercase;
   padding: 0 8px 8px;
 }
+
 .tier-list {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
+
 .tier-btn {
   background: transparent;
   color: var(--text-secondary);
@@ -309,13 +323,33 @@ const clearSearch = () => {
   font-weight: 500;
   border-left: 2px solid transparent;
 }
+
 .tier-btn:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
 }
+
 .tier-btn.active {
   background: var(--bg-tertiary);
   color: var(--text-primary);
   border-left-color: var(--job-color);
+}
+
+.settings-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  margin-left: auto;
+  transition: all 0.15s;
+}
+
+.settings-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  transform: rotate(45deg);
 }
 </style>

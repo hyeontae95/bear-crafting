@@ -4,6 +4,7 @@ import { simulateAttempts, getCompletionProbability } from "../utils/simulator.j
 import OutcomeChart from "./OutcomeChart.vue";
 import { findItemByName } from "../utils/searchHelper.js";
 import { getItemImage } from '../data/imageMap.js'
+import { useSettings} from '../composables/useSettings.js'
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -13,6 +14,8 @@ const props = defineProps({
 });
 const emit = defineEmits(["close"]);
 
+const {getProbabilityByDbKey} = useSettings();
+
 // ════════════════════════════════════════
 // 등급 입력칸 자동 생성 
 // ════════════════════════════════════════
@@ -20,12 +23,15 @@ function buildInitialOutcomes() {
   const item = props.item;
   const list = [];
 
+  // 설정에서 확률 가져오기 (tier 키 기반)
+  const savedProb = getProbabilityByDbKey(props.tier);
+
   // ① Tier4: 장인 / 평범 (실패)
   if (item.artisanSuccessQuantity !== undefined) {
     list.push({
       key: "artisan",
       label: "장인",
-      chance: 0,
+      chance: savedProb?.artisanSuccess ?? 0,
       quantity: item.artisanSuccessQuantity,
       readonly: false,
       color: "#f59e0b",
@@ -33,8 +39,8 @@ function buildInitialOutcomes() {
     list.push({
       key: "normal_fail",
       label: `평범 (실패 → ${item.normalSuccessItemName})`,
-      chance: 0,
-      quantity: 0, // 실패 = 목표 아이템 0개
+      chance: savedProb?.normalSuccess ?? 0,
+      quantity: 0,
       readonly: false,
       color: "#71717a",
     });
@@ -47,11 +53,15 @@ function buildInitialOutcomes() {
   const hasNormal = item.normalSuccessQuantity > 0;
 
   if (hasCritical) {
-    // 공예가면 영감받음, 대장장이면 대성공
+    // 공예가: inspired (영감받음) / 대장장이: criticalSuccess (대성공)
+    const chanceValue = props.job === "crafter"
+      ? (savedProb?.inspired ?? 0)
+      : (savedProb?.criticalSuccess ?? 0);
+
     list.push({
       key: "critical",
       label: props.job === "crafter" ? "영감받음" : "대성공",
-      chance: 0,
+      chance: chanceValue,
       quantity: item.criticalSuccessQuantity,
       readonly: false,
       color: props.job === "crafter" ? "#a855f7" : "#fbbf24",
@@ -62,7 +72,7 @@ function buildInitialOutcomes() {
     list.push({
       key: "additional",
       label: "추가 제작",
-      chance: 0,
+      chance: savedProb?.additional ?? 0,
       quantity: item.additionalSuccessQuantity,
       readonly: false,
       color: "#34d399",
@@ -73,7 +83,7 @@ function buildInitialOutcomes() {
     list.push({
       key: "normal",
       label: "성공",
-      chance: 0,
+      chance: savedProb?.normalSuccess ?? 0,
       quantity: item.normalSuccessQuantity,
       readonly: false,
       color: "#60a5fa",
@@ -280,7 +290,10 @@ const formatStacks = (count) => {
           </div>
 
           <div class="outcomes-block">
-            <h3>제작 등급별 확률</h3>
+            <div class="block-header">
+              <h3>제작 등급별 확률</h3>
+              <span class="hint">⚙️ 설정에서 기본값 변경 가능</span>
+            </div>
             <div v-for="o in outcomes" :key="o.key" class="outcome-row">
               <div class="outcome-label" :style="{ color: o.color }">
                 {{ o.label }}
@@ -729,5 +742,19 @@ const formatStacks = (count) => {
 /* material-row 그리드 수정 (이미지 칸 추가) */
 .material-row {
   grid-template-columns: 64px 24px 1fr auto auto !important;
+}
+
+.block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.block-header h3 {
+  margin-bottom: 0;
+}
+.hint {
+  font-size: 10px;
+  color: var(--text-tertiary);
 }
 </style>
