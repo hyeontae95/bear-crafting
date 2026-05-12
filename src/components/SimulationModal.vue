@@ -14,7 +14,7 @@ const props = defineProps({
 const emit = defineEmits(["close"]);
 
 // ════════════════════════════════════════
-// 등급 입력칸 자동 생성
+// 등급 입력칸 자동 생성 
 // ════════════════════════════════════════
 function buildInitialOutcomes() {
   const item = props.item;
