@@ -45,15 +45,9 @@ const handleSearchSelect = (entry) => {
   if (isPortrait.value) activeTab.value = "main";
 };
 
-const portraitQuery_width = ref(window.innerWidth);
 </script>
 
 <template>
-  <div
-    style="position:fixed;top:0;left:0;background:red;color:white;z-index:99999;font-size:14px;padding:6px;pointer-events:none;">
-    {{ isPortrait ? '모바일' : isFABMode ? 'FAB' : '데스크탑' }} / {{ portraitQuery_width }}
-  </div>
-
   <div class="app-layout">
     <div class="panels">
       <Sidebar v-if="!isPortrait || activeTab === 'sidebar'" class="panel-sidebar" :current-category="currentCategory"
@@ -158,7 +152,8 @@ const portraitQuery_width = ref(window.innerWidth);
 }
 
 .bottom-tab-bar {
-  height: 56px;
+  height: calc(56px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
   flex-shrink: 0;
   display: flex;
   background: var(--bg-secondary);
