@@ -211,7 +211,7 @@ const modalTier = computed(() => selectedItem.value?._tier || props.category.tie
   .breadcrumb { font-size: 15px; }
   .items-grid {
     padding: 12px 16px;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: 1fr; /* 모바일에서는 무조건 1열로 꽉 차게 변경 */
     gap: 10px;
   }
 }
