@@ -103,12 +103,34 @@ const renderChart = () => {
           emit("bar-click", labels[idx]);
           return;
         }
-        // 막대 못 눌렀을 때 → x축 기준 가장 가까운 열로 클릭 처리
+
+        // x축 레이블 클릭 감지
+        const xAxis = chartInstance.scales.x;
+        const mouseY = e.native.offsetY;
+        const mouseX = e.native.offsetX;
+
+        // x축 레이블 영역인지 확인 (차트 아래쪽)
+        if (mouseY > xAxis.top) {
+          // 가장 가까운 x축 인덱스 찾기
+          let closestIdx = -1;
+          let closestDist = Infinity;
+          labels.forEach((label, idx) => {
+            const xPos = xAxis.getPixelForValue(label);
+            const dist = Math.abs(mouseX - xPos);
+            if (dist < closestDist) {
+              closestDist = dist;
+              closestIdx = idx;
+            }
+          });
+          if (closestIdx >= 0 && closestDist < 30) {
+            emit("bar-click", labels[closestIdx]);
+            return;
+          }
+        }
+
+        // 기존 fallback
         const points = chartInstance.getElementsAtEventForMode(
-          e.native,
-          "index",
-          { intersect: false },
-          true
+          e.native, "index", { intersect: false }, true
         );
         if (points.length > 0) {
           emit("bar-click", labels[points[0].index]);

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed } from "vue";
 import Sidebar from "./components/Sidebar.vue";
 import MainPanel from "./components/MainPanel.vue";
 import QueuePanel from "./components/QueuePanel.vue";
@@ -9,16 +9,15 @@ const externalSelect = ref(null);
 const activeTab = ref("main");
 const queueOpen = ref(false);
 
-const w = ref(window.innerWidth);
-const h = ref(window.innerHeight);
-const onResize = () => { w.value = window.innerWidth; h.value = window.innerHeight; };
-window.addEventListener('resize', onResize);
-onBeforeUnmount(() => window.removeEventListener('resize', onResize));
+const portraitQuery = window.matchMedia('(max-width: 1023px)');
+const desktopQuery = window.matchMedia('(min-width: 1280px)');
 
-// 레이아웃 모드
-const isPortrait  = computed(() => w.value < 768);                          // 모바일 세로
-const isFABMode   = computed(() => !isPortrait.value && w.value < 1280);    // 태블릿 전체 + 모바일 가로
-const isDesktop   = computed(() => w.value >= 1280);                        // 데스크탑
+const isPortrait = ref(portraitQuery.matches);
+const isDesktop = ref(desktopQuery.matches);
+const isFABMode = computed(() => !isPortrait.value && !isDesktop.value);
+
+portraitQuery.addEventListener('change', (e) => { isPortrait.value = e.matches; });
+desktopQuery.addEventListener('change', (e) => { isDesktop.value = e.matches; });
 
 const handleTabClick = (tab) => {
   if (isPortrait.value && activeTab.value === tab && tab !== 'main') {
@@ -56,7 +55,6 @@ const handleSearchSelect = (entry) => {
         :category="currentCategory"
         :auto-select="externalSelect"
       />
-      <!-- 데스크탑: 항상 / FAB모드: 슬라이드 / 세로모바일: 탭 -->
       <QueuePanel
         v-if="isDesktop || (isPortrait && activeTab === 'queue') || (isFABMode && queueOpen)"
         class="panel-queue"
@@ -104,7 +102,6 @@ const handleSearchSelect = (entry) => {
   min-height: 0;
 }
 
-/* 패널 기본 */
 .panel-sidebar,
 .panel-main,
 .panel-queue {
@@ -112,13 +109,6 @@ const handleSearchSelect = (entry) => {
   min-height: 0;
 }
 
-/* 세로모바일: 풀사이즈 */
-.panel-sidebar,
-.panel-main {
-  width: 100%;
-}
-
-/* 큐 슬라이드 (FAB모드) */
 .queue-slide {
   position: fixed !important;
   top: 0;
@@ -135,7 +125,6 @@ const handleSearchSelect = (entry) => {
   transform: translateX(0);
 }
 
-/* FAB 버튼 */
 .fab-btn {
   position: fixed;
   bottom: 24px;
@@ -166,7 +155,6 @@ const handleSearchSelect = (entry) => {
   opacity: 0.8;
 }
 
-/* 하단 탭바 */
 .bottom-tab-bar {
   height: 56px;
   flex-shrink: 0;
