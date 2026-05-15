@@ -433,7 +433,7 @@ const formatStacks = (count) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 9999;
   padding: 32px;
 }
 
@@ -756,5 +756,37 @@ const formatStacks = (count) => {
 .hint {
   font-size: 10px;
   color: var(--text-tertiary);
+}
+
+/* ── 모바일 반응형 ── */
+@media (max-width: 767px) {
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal {
+    border-radius: 20px 20px 0 0;
+    max-height: 95vh;
+    max-width: 100%;
+  }
+
+  .modal-body {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .modal-header {
+    padding: 16px 20px;
+  }
+
+  .modal-header h2 {
+    font-size: 16px;
+  }
+
+  .outcome-row {
+    grid-template-columns: 90px 1fr auto auto;
+  }
 }
 </style>

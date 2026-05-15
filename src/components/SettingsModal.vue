@@ -1,139 +1,118 @@
 <template>
   <div v-if="modelValue" class="modal-overlay" @click.self="close">
     <div class="modal">
-      <!-- 헤더 -->
       <div class="modal-header">
         <h2>⚙️ 확률 설정</h2>
         <button class="btn-close" @click="close">✕</button>
       </div>
 
-      <!-- 안내 -->
-      <p class="note">
-        본인 캐릭터 기준 등급별 제작 확률을 입력하세요. 자동으로 저장됩니다.<br>
-        도구는 100% 고정이라 입력란이 없습니다.
-      </p>
+      <div class="modal-body">
+        <p class="note">
+          본인 캐릭터 기준 등급별 제작 확률을 입력하세요. 자동으로 저장됩니다.<br>
+          도구는 100% 고정이라 입력란이 없습니다.
+        </p>
 
-      <!-- 대장장이 -->
-      <section class="section">
-        <h3 class="section-title">🔨 대장장이</h3>
+        <section class="section">
+          <h3 class="section-title">🔨 대장장이</h3>
+          <div class="grade-row" v-for="tier in blacksmithTiers" :key="tier.key">
+            <div class="grade-name">{{ tier.label }}</div>
+            <div class="inputs">
+              <template v-if="tier.key !== 'basicTier4'">
+                <div class="prob-input">
+                  <label>대성공</label>
+                  <div class="input-wrap">
+                    <input type="number" min="0" max="100"
+                      :value="settings.blacksmith[tier.key].criticalSuccess"
+                      @input="onInput('blacksmith', tier.key, 'criticalSuccess', $event)" />
+                    <span class="percent">%</span>
+                  </div>
+                </div>
+                <div class="prob-input">
+                  <label>추가</label>
+                  <div class="input-wrap">
+                    <input type="number" min="0" max="100"
+                      :value="settings.blacksmith[tier.key].additional"
+                      @input="onInput('blacksmith', tier.key, 'additional', $event)" />
+                    <span class="percent">%</span>
+                  </div>
+                </div>
+                <div class="prob-input">
+                  <label>성공</label>
+                  <div class="input-wrap">
+                    <input type="number" min="0" max="100"
+                      :value="settings.blacksmith[tier.key].normalSuccess"
+                      @input="onInput('blacksmith', tier.key, 'normalSuccess', $event)" />
+                    <span class="percent">%</span>
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="prob-input">
+                  <label>장인</label>
+                  <div class="input-wrap">
+                    <input type="number" min="0" max="100"
+                      :value="settings.blacksmith[tier.key].artisanSuccess"
+                      @input="onInput('blacksmith', tier.key, 'artisanSuccess', $event)" />
+                    <span class="percent">%</span>
+                  </div>
+                </div>
+                <div class="prob-input">
+                  <label>평범</label>
+                  <div class="input-wrap">
+                    <input type="number" min="0" max="100"
+                      :value="settings.blacksmith[tier.key].normalSuccess"
+                      @input="onInput('blacksmith', tier.key, 'normalSuccess', $event)" />
+                    <span class="percent">%</span>
+                  </div>
+                </div>
+              </template>
+              <div class="total" :class="{ valid: isValid(tier.key, 'blacksmith') }">
+                합계: {{ getTotal(tier.key, 'blacksmith') }}%
+              </div>
+            </div>
+          </div>
+        </section>
 
-        <div class="grade-row" v-for="tier in blacksmithTiers" :key="tier.key">
-          <div class="grade-name">{{ tier.label }}</div>
-          <div class="inputs">
-            <template v-if="tier.key !== 'basicTier4'">
+        <section class="section">
+          <h3 class="section-title">🪡 공예가</h3>
+          <div class="grade-row" v-for="grade in crafterGrades" :key="grade.key">
+            <div class="grade-name">{{ grade.label }}</div>
+            <div class="inputs">
               <div class="prob-input">
-                <label>대성공</label>
+                <label>영감받음</label>
                 <div class="input-wrap">
-                  <input
-                    type="number" min="0" max="100"
-                    :value="settings.blacksmith[tier.key].criticalSuccess"
-                    @input="onInput('blacksmith', tier.key, 'criticalSuccess', $event)"
-                  />
+                  <input type="number" min="0" max="100"
+                    :value="settings.crafter[grade.key].inspired"
+                    @input="onInput('crafter', grade.key, 'inspired', $event)" />
                   <span class="percent">%</span>
                 </div>
               </div>
               <div class="prob-input">
                 <label>추가</label>
                 <div class="input-wrap">
-                  <input
-                    type="number" min="0" max="100"
-                    :value="settings.blacksmith[tier.key].additional"
-                    @input="onInput('blacksmith', tier.key, 'additional', $event)"
-                  />
+                  <input type="number" min="0" max="100"
+                    :value="settings.crafter[grade.key].additional"
+                    @input="onInput('crafter', grade.key, 'additional', $event)" />
                   <span class="percent">%</span>
                 </div>
               </div>
               <div class="prob-input">
                 <label>성공</label>
                 <div class="input-wrap">
-                  <input
-                    type="number" min="0" max="100"
-                    :value="settings.blacksmith[tier.key].normalSuccess"
-                    @input="onInput('blacksmith', tier.key, 'normalSuccess', $event)"
-                  />
+                  <input type="number" min="0" max="100"
+                    :value="settings.crafter[grade.key].normalSuccess"
+                    @input="onInput('crafter', grade.key, 'normalSuccess', $event)" />
                   <span class="percent">%</span>
                 </div>
               </div>
-            </template>
-            <template v-else>
-              <div class="prob-input">
-                <label>장인</label>
-                <div class="input-wrap">
-                  <input
-                    type="number" min="0" max="100"
-                    :value="settings.blacksmith[tier.key].artisanSuccess"
-                    @input="onInput('blacksmith', tier.key, 'artisanSuccess', $event)"
-                  />
-                  <span class="percent">%</span>
-                </div>
+              <div class="total" :class="{ valid: isValid(grade.key, 'crafter') }">
+                합계: {{ getTotal(grade.key, 'crafter') }}%
               </div>
-              <div class="prob-input">
-                <label>평범</label>
-                <div class="input-wrap">
-                  <input
-                    type="number" min="0" max="100"
-                    :value="settings.blacksmith[tier.key].normalSuccess"
-                    @input="onInput('blacksmith', tier.key, 'normalSuccess', $event)"
-                  />
-                  <span class="percent">%</span>
-                </div>
-              </div>
-            </template>
-            <div class="total" :class="{ valid: isValid(tier.key, 'blacksmith') }">
-              합계: {{ getTotal(tier.key, 'blacksmith') }}%
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      <!-- 공예가 -->
-      <section class="section">
-        <h3 class="section-title">🪡 공예가</h3>
-
-        <div class="grade-row" v-for="grade in crafterGrades" :key="grade.key">
-          <div class="grade-name">{{ grade.label }}</div>
-          <div class="inputs">
-            <div class="prob-input">
-              <label>영감받음</label>
-              <div class="input-wrap">
-                <input
-                  type="number" min="0" max="100"
-                  :value="settings.crafter[grade.key].inspired"
-                  @input="onInput('crafter', grade.key, 'inspired', $event)"
-                />
-                <span class="percent">%</span>
-              </div>
-            </div>
-            <div class="prob-input">
-              <label>추가</label>
-              <div class="input-wrap">
-                <input
-                  type="number" min="0" max="100"
-                  :value="settings.crafter[grade.key].additional"
-                  @input="onInput('crafter', grade.key, 'additional', $event)"
-                />
-                <span class="percent">%</span>
-              </div>
-            </div>
-            <div class="prob-input">
-              <label>성공</label>
-              <div class="input-wrap">
-                <input
-                  type="number" min="0" max="100"
-                  :value="settings.crafter[grade.key].normalSuccess"
-                  @input="onInput('crafter', grade.key, 'normalSuccess', $event)"
-                />
-                <span class="percent">%</span>
-              </div>
-            </div>
-            <div class="total" :class="{ valid: isValid(grade.key, 'crafter') }">
-              합계: {{ getTotal(grade.key, 'crafter') }}%
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 푸터 -->
       <div class="modal-footer">
         <button class="btn-reset" @click="onReset">🔄 모두 초기화</button>
         <button class="btn-done" @click="close">완료</button>
@@ -145,11 +124,8 @@
 <script setup>
 import { useSettings } from '../composables/useSettings.js';
 
-const props = defineProps({
-  modelValue: Boolean,
-});
+const props = defineProps({ modelValue: Boolean });
 const emit = defineEmits(['update:modelValue']);
-
 const { settings, resetSettings } = useSettings();
 
 const blacksmithTiers = [
@@ -201,7 +177,7 @@ function onReset() {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
   padding: 20px;
 }
 
@@ -212,9 +188,9 @@ function onReset() {
   width: 100%;
   max-width: 720px;
   max-height: 90vh;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .modal-header {
@@ -223,10 +199,7 @@ function onReset() {
   align-items: center;
   padding: 20px 24px;
   border-bottom: 1px solid #333;
-  position: sticky;
-  top: 0;
-  background: #1a1a1a;
-  z-index: 2;
+  flex-shrink: 0;
 }
 
 .modal-header h2 {
@@ -248,6 +221,12 @@ function onReset() {
 .btn-close:hover {
   background: rgba(255, 100, 100, 0.15);
   color: #ff6464;
+}
+
+/* 스크롤 영역 */
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
 }
 
 .note {
@@ -364,8 +343,7 @@ function onReset() {
   justify-content: space-between;
   padding: 16px 24px;
   border-top: 1px solid #333;
-  position: sticky;
-  bottom: 0;
+  flex-shrink: 0;
   background: #1a1a1a;
 }
 
@@ -398,5 +376,46 @@ function onReset() {
 
 .btn-done:hover {
   background: #3b82f6;
+}
+
+/* ── 모바일 ── */
+@media (max-width: 767px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal {
+    max-height: calc(95vh - 56px);
+    border-radius: 20px 20px 0 0;
+  }
+
+  .grade-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .grade-name {
+    width: 100%;
+    font-size: 12px;
+    color: #999;
+  }
+
+  .inputs {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .total {
+    margin-left: 0;
+    width: 100%;
+    text-align: right;
+  }
+
+  .input-wrap {
+    width: 70px;
+  }
 }
 </style>

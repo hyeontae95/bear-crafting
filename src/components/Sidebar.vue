@@ -10,7 +10,6 @@ const emit = defineEmits(["select", "search-select"]);
 
 const showSettings = ref(false);
 
-// 카테고리 메뉴
 const menu = [
   {
     job: "favorites",
@@ -47,9 +46,6 @@ const menu = [
 const isActive = (job, tier) =>
   props.currentCategory.job === job && props.currentCategory.tier === tier;
 
-// ════════════════════════════════════════
-// 검색
-// ════════════════════════════════════════
 const searchQuery = ref("");
 const searchResults = computed(() => searchItems(searchQuery.value));
 const isSearching = computed(() => searchQuery.value.trim().length > 0);
@@ -72,11 +68,9 @@ const clearSearch = () => {
         <div class="title-main">Crafting</div>
         <div class="title-sub">Calculator</div>
       </div>
-      <button class="settings-btn" @click="showSettings = true" title="확률 설정">
-        ⚙️
-      </button>
+      <button class="settings-btn" @click="showSettings = true" title="확률 설정">⚙️</button>
     </div>
-    <!-- 검색바 -->
+
     <div class="search-wrap">
       <div class="search-box">
         <span class="search-icon">🔍</span>
@@ -85,16 +79,13 @@ const clearSearch = () => {
       </div>
     </div>
 
-    <!-- 검색 결과 -->
     <div v-if="isSearching" class="search-results">
       <div class="results-label">검색 결과 {{ searchResults.length }}건</div>
       <div v-if="searchResults.length === 0" class="no-results">결과 없음</div>
       <button v-for="(entry, idx) in searchResults" :key="idx" class="result-item" @click="handleSearchClick(entry)">
         <div class="result-main">
           <span class="result-name">{{ entry.itemName }}</span>
-          <span v-if="entry.matchType === 'material'" class="material-hint">
-            🧱 {{ entry.matchedMaterial }}
-          </span>
+          <span v-if="entry.matchType === 'material'" class="material-hint">🧱 {{ entry.matchedMaterial }}</span>
         </div>
         <div class="result-sub">
           <span class="result-job" :class="entry.job">{{ entry.jobLabel }}</span>
@@ -103,16 +94,17 @@ const clearSearch = () => {
       </button>
     </div>
 
-    <!-- 일반 메뉴 (검색 중이 아닐 때만) -->
     <nav v-else class="menu">
       <div v-for="section in menu" :key="section.job" class="section">
-        <div class="section-label" :style="{ color: section.color }">
-          {{ section.label }}
-        </div>
+        <div class="section-label" :style="{ color: section.color }">{{ section.label }}</div>
         <div class="tier-list">
-          <button v-for="tier in section.tiers" :key="tier.key" class="tier-btn"
-            :class="{ active: isActive(section.job, tier.key) }" :style="{ '--job-color': section.color }"
-            @click="emit('select', { job: section.job, tier: tier.key })">
+          <button
+            v-for="tier in section.tiers" :key="tier.key"
+            class="tier-btn"
+            :class="{ active: isActive(section.job, tier.key) }"
+            :style="{ '--job-color': section.color }"
+            @click="emit('select', { job: section.job, tier: tier.key })"
+          >
             {{ tier.label }}
           </button>
         </div>
@@ -130,6 +122,7 @@ const clearSearch = () => {
   flex-direction: column;
   flex-shrink: 0;
   border-right: 1px solid var(--border);
+  height: 100%;
 }
 
 .sidebar-header {
@@ -137,26 +130,17 @@ const clearSearch = () => {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
-.logo {
-  font-size: 28px;
-}
+.logo { font-size: 28px; }
+.title-main { font-size: 16px; font-weight: 700; }
+.title-sub { font-size: 12px; color: var(--text-tertiary); }
 
-.title-main {
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.title-sub {
-  font-size: 12px;
-  color: var(--text-tertiary);
-}
-
-/* ── 검색바 ── */
 .search-wrap {
   padding: 0 12px 12px;
   border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .search-box {
@@ -169,16 +153,8 @@ const clearSearch = () => {
   border: 1px solid transparent;
   transition: border-color 0.15s;
 }
-
-.search-box:focus-within {
-  border-color: var(--accent);
-}
-
-.search-icon {
-  font-size: 13px;
-  opacity: 0.6;
-}
-
+.search-box:focus-within { border-color: var(--accent); }
+.search-icon { font-size: 13px; opacity: 0.6; }
 .search-input {
   flex: 1;
   background: transparent;
@@ -187,10 +163,7 @@ const clearSearch = () => {
   font-size: 13px;
   min-width: 0;
 }
-
-.search-input::placeholder {
-  color: var(--text-tertiary);
-}
+.search-input::placeholder { color: var(--text-tertiary); }
 
 .clear-btn {
   background: transparent;
@@ -201,19 +174,13 @@ const clearSearch = () => {
   border-radius: 4px;
   flex-shrink: 0;
 }
+.clear-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
 
-.clear-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
-/* ── 검색 결과 ── */
 .search-results {
   flex: 1;
   overflow-y: auto;
   padding: 12px 8px;
 }
-
 .results-label {
   font-size: 10px;
   color: var(--text-tertiary);
@@ -222,13 +189,7 @@ const clearSearch = () => {
   padding: 0 8px 8px;
   font-weight: 600;
 }
-
-.no-results {
-  padding: 20px;
-  text-align: center;
-  color: var(--text-tertiary);
-  font-size: 12px;
-}
+.no-results { padding: 20px; text-align: center; color: var(--text-tertiary); font-size: 12px; }
 
 .result-item {
   width: 100%;
@@ -241,64 +202,22 @@ const clearSearch = () => {
   gap: 4px;
   margin-bottom: 2px;
 }
+.result-item:hover { background: var(--bg-hover); }
+.result-main { display: flex; flex-direction: column; gap: 3px; }
+.result-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.material-hint { font-size: 11px; color: var(--accent); }
+.result-sub { display: flex; gap: 6px; font-size: 10px; }
+.result-job { padding: 2px 6px; border-radius: 3px; color: white; font-weight: 600; }
+.result-job.blacksmith { background: var(--job-blacksmith); }
+.result-job.crafter { background: var(--job-crafter); }
+.result-tier { color: var(--text-tertiary); }
 
-.result-item:hover {
-  background: var(--bg-hover);
-}
-
-.result-main {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.result-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.material-hint {
-  font-size: 11px;
-  color: var(--accent);
-}
-
-.result-sub {
-  display: flex;
-  gap: 6px;
-  font-size: 10px;
-}
-
-.result-job {
-  padding: 2px 6px;
-  border-radius: 3px;
-  color: white;
-  font-weight: 600;
-}
-
-.result-job.blacksmith {
-  background: var(--job-blacksmith);
-}
-
-.result-job.crafter {
-  background: var(--job-crafter);
-}
-
-.result-tier {
-  color: var(--text-tertiary);
-}
-
-/* ── 일반 메뉴 ── */
 .menu {
   flex: 1;
   overflow-y: auto;
   padding: 16px 12px;
 }
-
-.section {
-  margin-bottom: 24px;
-}
-
+.section { margin-bottom: 24px; }
 .section-label {
   font-size: 16px;
   font-weight: 700;
@@ -306,13 +225,7 @@ const clearSearch = () => {
   text-transform: uppercase;
   padding: 0 8px 8px;
 }
-
-.tier-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
+.tier-list { display: flex; flex-direction: column; gap: 2px; }
 .tier-btn {
   background: transparent;
   color: var(--text-secondary);
@@ -323,12 +236,7 @@ const clearSearch = () => {
   font-weight: 500;
   border-left: 2px solid transparent;
 }
-
-.tier-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
+.tier-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
 .tier-btn.active {
   background: var(--bg-tertiary);
   color: var(--text-primary);
@@ -346,10 +254,23 @@ const clearSearch = () => {
   margin-left: auto;
   transition: all 0.15s;
 }
+.settings-btn:hover { background: var(--bg-hover); color: var(--text-primary); transform: rotate(45deg); }
 
-.settings-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-  transform: rotate(45deg);
+/* ── 모바일 세로 ── */
+@media (max-width: 767px) {
+  .sidebar {
+    width: 100%;
+    border-right: none;
+  }
+  .section-label { font-size: 14px; }
+}
+
+/* ── 태블릿 ── */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .sidebar {
+    width: 200px;
+  }
+  .section-label { font-size: 13px; }
+  .tier-btn { font-size: 12px; padding: 8px 10px; }
 }
 </style>
