@@ -525,7 +525,7 @@ export const MasterDatabase = {
                     { materialName: "고대의 맘모스 뿔", requiredQuantity: 2, sourceCategory: "hunter" },
                     { materialName: "공예품 끌", requiredQuantity: 2, sourceCategory: "blacksmith" },
                     { materialName: "탐욕의 실", requiredQuantity: 2, sourceCategory: "blacksmith" },
-                    { materialName: "타락한 월계수 잎", requiredQuantity: 24, sourceCategory: "hunter" }
+                    { materialName: "용의 피", requiredQuantity: 24, sourceCategory: "hunter" }
                 ]
             },
             {
