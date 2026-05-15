@@ -44,7 +44,6 @@ const handleSearchSelect = (entry) => {
   externalSelect.value = entry.itemName;
   if (isPortrait.value) activeTab.value = "main";
 };
-
 </script>
 
 <template>
@@ -58,13 +57,11 @@ const handleSearchSelect = (entry) => {
         class="panel-queue" :class="{ 'queue-slide': isFABMode, 'queue-open': isFABMode && queueOpen }" />
     </div>
 
-    <!-- FAB 큐 토글 버튼 -->
     <button v-if="isFABMode" class="fab-btn" @click="queueOpen = !queueOpen">
       <span>📦</span>
       <span v-if="queueOpen" class="fab-close">✕</span>
     </button>
 
-    <!-- 세로모바일 하단 탭바 -->
     <nav v-if="isPortrait" class="bottom-tab-bar">
       <button class="tab-btn" :class="{ active: activeTab === 'sidebar' }" @click="handleTabClick('sidebar')">
         <span class="tab-icon">☰</span>
@@ -83,10 +80,13 @@ const handleSearchSelect = (entry) => {
 </template>
 
 <style scoped>
+/* 🌟 핵심 수정: 100vh -> 100dvh 로 변경하고 화면 바깥으로 밀리는 것 방지 */
 .app-layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh; 
+  width: 100vw;
+  overflow: hidden; 
   background: var(--bg-primary);
   position: relative;
 }
@@ -105,11 +105,12 @@ const handleSearchSelect = (entry) => {
   min-height: 0;
 }
 
+/* 🌟 핵심 수정: 여기도 100vh -> 100dvh */
 .queue-slide {
   position: fixed !important;
   top: 0;
   right: 0;
-  height: 100vh !important;
+  height: 100dvh !important; 
   width: 320px;
   transform: translateX(100%);
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
