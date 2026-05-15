@@ -9,15 +9,22 @@ const externalSelect = ref(null);
 const activeTab = ref("main");
 const queueOpen = ref(false);
 
-const portraitQuery = window.matchMedia('(max-width: 1023px)');
-const desktopQuery = window.matchMedia('(min-width: 1280px)');
+const getIsPortrait = () => window.matchMedia('(max-width: 1023px)').matches || window.innerWidth < 1024;
+const getIsDesktop = () => window.matchMedia('(min-width: 1280px)').matches || window.innerWidth >= 1280;
 
-const isPortrait = ref(portraitQuery.matches);
-const isDesktop = ref(desktopQuery.matches);
+const isPortrait = ref(getIsPortrait());
+const isDesktop = ref(getIsDesktop());
 const isFABMode = computed(() => !isPortrait.value && !isDesktop.value);
 
-portraitQuery.addEventListener('change', (e) => { isPortrait.value = e.matches; });
-desktopQuery.addEventListener('change', (e) => { isDesktop.value = e.matches; });
+window.addEventListener('resize', () => {
+  isPortrait.value = getIsPortrait();
+  isDesktop.value = getIsDesktop();
+});
+
+const portraitQuery = window.matchMedia('(max-width: 1023px)');
+const desktopQuery = window.matchMedia('(min-width: 1280px)');
+portraitQuery.addEventListener('change', () => { isPortrait.value = getIsPortrait(); });
+desktopQuery.addEventListener('change', () => { isDesktop.value = getIsDesktop(); });
 
 const handleTabClick = (tab) => {
   if (isPortrait.value && activeTab.value === tab && tab !== 'main') {
@@ -37,29 +44,24 @@ const handleSearchSelect = (entry) => {
   externalSelect.value = entry.itemName;
   if (isPortrait.value) activeTab.value = "main";
 };
+
+const portraitQuery_width = ref(window.innerWidth);
 </script>
 
 <template>
+  <div
+    style="position:fixed;top:0;left:0;background:red;color:white;z-index:99999;font-size:14px;padding:6px;pointer-events:none;">
+    {{ isPortrait ? '모바일' : isFABMode ? 'FAB' : '데스크탑' }} / {{ portraitQuery_width }}
+  </div>
+
   <div class="app-layout">
     <div class="panels">
-      <Sidebar
-        v-if="!isPortrait || activeTab === 'sidebar'"
-        class="panel-sidebar"
-        :current-category="currentCategory"
-        @select="handleCategorySelect"
-        @search-select="handleSearchSelect"
-      />
-      <MainPanel
-        v-if="!isPortrait || activeTab === 'main'"
-        class="panel-main"
-        :category="currentCategory"
-        :auto-select="externalSelect"
-      />
-      <QueuePanel
-        v-if="isDesktop || (isPortrait && activeTab === 'queue') || (isFABMode && queueOpen)"
-        class="panel-queue"
-        :class="{ 'queue-slide': isFABMode, 'queue-open': isFABMode && queueOpen }"
-      />
+      <Sidebar v-if="!isPortrait || activeTab === 'sidebar'" class="panel-sidebar" :current-category="currentCategory"
+        @select="handleCategorySelect" @search-select="handleSearchSelect" />
+      <MainPanel v-if="!isPortrait || activeTab === 'main'" class="panel-main" :category="currentCategory"
+        :auto-select="externalSelect" />
+      <QueuePanel v-if="isDesktop || (isPortrait && activeTab === 'queue') || (isFABMode && queueOpen)"
+        class="panel-queue" :class="{ 'queue-slide': isFABMode, 'queue-open': isFABMode && queueOpen }" />
     </div>
 
     <!-- FAB 큐 토글 버튼 -->
