@@ -26,16 +26,15 @@ Chart.register(
 );
 
 const props = defineProps({
-  distribution: { type: Object, required: true }, // { 시도횟수: 빈도 }
-  sortedAttempts: { type: Array, required: true }, // 정렬된 시도횟수 배열
-  selected: { type: Number, default: null }, // 현재 선택된 막대
+  distribution: { type: Object, required: true },
+  sortedAttempts: { type: Array, required: true },
+  selected: { type: Number, default: null },
 });
 const emit = defineEmits(["bar-click"]);
 
 const canvas = ref(null);
 let chartInstance = null;
 
-// 데이터 변환: x축 (시도횟수), y축 (빈도)
 const buildChartData = () => {
   const entries = Object.entries(props.distribution)
     .map(([k, v]) => [Number(k), v])
@@ -44,7 +43,6 @@ const buildChartData = () => {
   const labels = entries.map((e) => e[0]);
   const counts = entries.map((e) => e[1]);
 
-  // 누적 분포 (cumulative %)
   const total = props.sortedAttempts.length;
   let acc = 0;
   const cumulative = entries.map(([attempts, count]) => {
@@ -52,12 +50,11 @@ const buildChartData = () => {
     return (acc / total) * 100;
   });
 
-  // 선택된 막대만 강조 색
   const barColors = labels.map(
     (l) =>
       l === props.selected
-        ? "#a78bfa" // 선택: 밝은 보라
-        : "rgba(139, 92, 246, 0.5)" // 일반: 반투명 보라
+        ? "#a78bfa"
+        : "rgba(139, 92, 246, 0.5)"
   );
 
   return { labels, counts, cumulative, barColors };
@@ -80,7 +77,7 @@ const renderChart = () => {
           backgroundColor: barColors,
           borderRadius: 4,
           yAxisID: "y",
-          order: 2, // 뒤로
+          order: 2,
         },
         {
           type: "line",
@@ -93,7 +90,7 @@ const renderChart = () => {
           pointHoverRadius: 4,
           tension: 0.2,
           yAxisID: "y1",
-          order: 1, // 앞으로
+          order: 1,
         },
       ],
     },
@@ -103,18 +100,38 @@ const renderChart = () => {
       onClick: (e, elements) => {
         if (elements.length > 0) {
           const idx = elements[0].index;
-          const attempts = labels[idx];
-          emit("bar-click", attempts);
+          emit("bar-click", labels[idx]);
+          return;
+        }
+        // 막대 못 눌렀을 때 → x축 기준 가장 가까운 열로 클릭 처리
+        const points = chartInstance.getElementsAtEventForMode(
+          e.native,
+          "index",
+          { intersect: false },
+          true
+        );
+        if (points.length > 0) {
+          emit("bar-click", labels[points[0].index]);
         }
       },
       onHover: (e, elements) => {
-        e.native.target.style.cursor = elements.length > 0 ? "pointer" : "default";
+        // hover도 동일하게 intersect: false로 넓게 잡기
+        const points = chartInstance.getElementsAtEventForMode(
+          e.native,
+          "index",
+          { intersect: false },
+          true
+        );
+        e.native.target.style.cursor = points.length > 0 ? "pointer" : "default";
       },
       plugins: {
         legend: {
           labels: { color: "#a1a1aa", font: { size: 11 } },
         },
         tooltip: {
+          mode: "index",
+          intersect: false,
+          position: "nearest",
           backgroundColor: "#1a1b21",
           borderColor: "#2d2e36",
           borderWidth: 1,
@@ -136,7 +153,7 @@ const renderChart = () => {
       },
       scales: {
         x: {
-          ticks: { color: "#71717a", font: { size: 11 } },
+          ticks: { color: "#d4d4d8", font: { size: 11 } },
           grid: { display: false },
           title: {
             display: true,
@@ -148,12 +165,12 @@ const renderChart = () => {
         y: {
           beginAtZero: true,
           position: "left",
-          ticks: { color: "#71717a", font: { size: 11 } },
+          ticks: { color: "#d4d4d8", font: { size: 11 } },
           grid: { color: "rgba(45, 46, 54, 0.5)" },
           title: {
             display: true,
             text: "빈도",
-            color: "#a1a1aa",
+            color: "#d4d4d8",
             font: { size: 12 },
           },
         },
