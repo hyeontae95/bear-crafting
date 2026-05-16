@@ -18,7 +18,7 @@ export const imageMap = {
   // 🔨 대장장이 - level0 (기본)
   // ════════════════════════════════════════
   '못': 'nail',
-  '기본 접착제': 'basic_glue',
+  '접착제': 'basic_glue',
 
   // ════════════════════════════════════════
   // 🔨 대장장이 - basicTier1 (I급)
@@ -41,7 +41,7 @@ export const imageMap = {
   // ════════════════════════════════════════
   '요리용 그릇': 'cooking_bowl',
   '디저트용 그릇': 'dessert_bowl',
-  '유리병': 'glass_bottle',
+  '음료병': 'glass_bottle',
   '공예품 끌': 'craft_chisel',
 
   // ════════════════════════════════════════
@@ -79,10 +79,10 @@ export const imageMap = {
   // 🪡 공예가 - RARE
   // ════════════════════════════════════════
   '광휘의 정화석': 'radiance_purification_stone',
-  '스컬웰의 악의 구술': 'skullwell_evil_orb',
-  '불꽃 감옥 구술': 'flame_prison_orb',
+  '스컬웹의 악의 구슬': 'skullwell_evil_orb',
+  '불꽃 감옥 구슬': 'flame_prison_orb',
   '물방울 떡꼬치': 'waterdrop_skewer',
-  '환 약': 'pill',
+  '환약': 'pill',
   '수호의 증표': 'guardian_token',
   '불길한 증표': 'ominous_token',
 
@@ -93,7 +93,7 @@ export const imageMap = {
   '메뚜기떼의 해적 깃발': 'locust_pirate_flag',
   '날카로운 송곳니 너클': 'sharp_fang_knuckle',
   '엔더 소드': 'ender_sword',
-  '루미너트 루프': 'luminate_loop',
+  '루미너스 루프': 'luminate_loop',
   '따스한 후드 점퍼': 'warm_hood_jumper',
 
   // ════════════════════════════════════════
@@ -104,6 +104,25 @@ export const imageMap = {
   '위더 크루세이더의 갑옷': 'wither_crusader_armor',
   '맹독의 손길': 'poison_touch',
   '여의주': 'wishing_orb',
+
+  // ════════════════════════════════════════
+  // 📖 도감 전용 아이템 (고급 재료 도감 추가분)
+  // ════════════════════════════════════════
+  '무기의 혼': 'weapon_soul',
+  '방어구의 혼': 'armor_soul',
+  '일반 장비 가루': 'normal_equipment_dust',
+  '고급 장비 가루': 'advanced_equipment_dust',
+  '희귀 장비 가루': 'rare_equipment_dust',
+  '영웅 장비 가루': 'hero_equipment_dust',
+  '전설 장비 가루': 'legendary_equipment_dust',
+  '황금 주괴': 'gold_ingot',
+  '슈팅스타': 'shooting_star',
+  '오만의 왕관': 'crown_of_arrogance',
+  '신의 주사위': 'divine_dice',
+  '황금 망치': 'golden_hammer',
+  '황금 톱니바퀴': 'golden_gear',
+  '황금 열매': 'golden_fruit',
+  '황금 램프': 'golden_lamp',
 
   // ════════════════════════════════════════
   // 🌾 농부 재료
@@ -193,6 +212,7 @@ export const imageMap = {
   '타락한 요정의 가루': 'corrupted_fairy_dust',
   '요정의 가루': 'fairy_dust',
   '가스트의 파편': 'ghast_fragment',
+  '용의 피': 'dragon_blood',
   '불의 결정체': 'fire_crystal_pure',
   '대지의 결정체': 'earth_crystal_pure',
   '바람의 결정체': 'wind_crystal_pure',

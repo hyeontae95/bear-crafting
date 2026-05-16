@@ -41,23 +41,35 @@ const menu = [
       { key: "legendary", label: "LEGENDARY" },
     ],
   },
-];
+]
+
+const pokedexMenu = [
+  {
+    job: "pokedex",
+    label: "📖 도감",
+    color: "#38bdf8",
+    tiers: [
+      { key: "material", label: "고급 재료 도감" },
+      { key: "craft", label: "공예품 도감" },
+    ],
+  },
+]
 
 const isActive = (job, tier) =>
-  props.currentCategory.job === job && props.currentCategory.tier === tier;
+  props.currentCategory.job === job && props.currentCategory.tier === tier
 
-const searchQuery = ref("");
-const searchResults = computed(() => searchItems(searchQuery.value));
-const isSearching = computed(() => searchQuery.value.trim().length > 0);
+const searchQuery = ref("")
+const searchResults = computed(() => searchItems(searchQuery.value))
+const isSearching = computed(() => searchQuery.value.trim().length > 0)
 
 const handleSearchClick = (entry) => {
-  emit("search-select", entry);
-  searchQuery.value = "";
-};
+  emit("search-select", entry)
+  searchQuery.value = ""
+}
 
 const clearSearch = () => {
-  searchQuery.value = "";
-};
+  searchQuery.value = ""
+}
 </script>
 
 <template>
@@ -95,7 +107,27 @@ const clearSearch = () => {
     </div>
 
     <nav v-else class="menu">
+      <!-- 제작 메뉴 -->
       <div v-for="section in menu" :key="section.job" class="section">
+        <div class="section-label" :style="{ color: section.color }">{{ section.label }}</div>
+        <div class="tier-list">
+          <button
+            v-for="tier in section.tiers" :key="tier.key"
+            class="tier-btn"
+            :class="{ active: isActive(section.job, tier.key) }"
+            :style="{ '--job-color': section.color }"
+            @click="emit('select', { job: section.job, tier: tier.key })"
+          >
+            {{ tier.label }}
+          </button>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="divider" />
+
+      <!-- 도감 메뉴 -->
+      <div v-for="section in pokedexMenu" :key="section.job" class="section">
         <div class="section-label" :style="{ color: section.color }">{{ section.label }}</div>
         <div class="tier-list">
           <button
@@ -256,6 +288,12 @@ const clearSearch = () => {
 }
 .settings-btn:hover { background: var(--bg-hover); color: var(--text-primary); transform: rotate(45deg); }
 
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0 8px 24px;
+}
+
 /* ── 모바일 세로 ── */
 @media (max-width: 767px) {
   .sidebar {
@@ -267,9 +305,7 @@ const clearSearch = () => {
 
 /* ── 태블릿 ── */
 @media (min-width: 768px) and (max-width: 1279px) {
-  .sidebar {
-    width: 200px;
-  }
+  .sidebar { width: 200px; }
   .section-label { font-size: 13px; }
   .tier-btn { font-size: 12px; padding: 8px 10px; }
 }

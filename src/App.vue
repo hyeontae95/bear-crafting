@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import Sidebar from "./components/Sidebar.vue";
 import MainPanel from "./components/MainPanel.vue";
 import QueuePanel from "./components/QueuePanel.vue";
+import PokedexPanel from "./components/PokedexPanel.vue";
 
 const currentCategory = ref({ job: "blacksmith", tier: "level0" });
 const externalSelect = ref(null);
@@ -25,6 +26,8 @@ const portraitQuery = window.matchMedia('(max-width: 1023px)');
 const desktopQuery = window.matchMedia('(min-width: 1280px)');
 portraitQuery.addEventListener('change', () => { isPortrait.value = getIsPortrait(); });
 desktopQuery.addEventListener('change', () => { isDesktop.value = getIsDesktop(); });
+
+const isPokedex = computed(() => currentCategory.value.job === 'pokedex');
 
 const handleTabClick = (tab) => {
   if (isPortrait.value && activeTab.value === tab && tab !== 'main') {
@@ -49,15 +52,37 @@ const handleSearchSelect = (entry) => {
 <template>
   <div class="app-layout">
     <div class="panels">
-      <Sidebar v-if="!isPortrait || activeTab === 'sidebar'" class="panel-sidebar" :current-category="currentCategory"
-        @select="handleCategorySelect" @search-select="handleSearchSelect" />
-      <MainPanel v-if="!isPortrait || activeTab === 'main'" class="panel-main" :category="currentCategory"
-        :auto-select="externalSelect" />
-      <QueuePanel v-if="isDesktop || (isPortrait && activeTab === 'queue') || (isFABMode && queueOpen)"
-        class="panel-queue" :class="{ 'queue-slide': isFABMode, 'queue-open': isFABMode && queueOpen }" />
+      <Sidebar
+        v-if="!isPortrait || activeTab === 'sidebar'"
+        class="panel-sidebar"
+        :current-category="currentCategory"
+        @select="handleCategorySelect"
+        @search-select="handleSearchSelect"
+      />
+
+      <!-- 도감 패널 -->
+      <PokedexPanel
+        v-if="isPokedex && (!isPortrait || activeTab === 'main')"
+        class="panel-main"
+        :type="currentCategory.tier"
+      />
+
+      <!-- 제작 패널 -->
+      <MainPanel
+        v-if="!isPokedex && (!isPortrait || activeTab === 'main')"
+        class="panel-main"
+        :category="currentCategory"
+        :auto-select="externalSelect"
+      />
+
+      <QueuePanel
+        v-if="!isPokedex && (isDesktop || (isPortrait && activeTab === 'queue') || (isFABMode && queueOpen))"
+        class="panel-queue"
+        :class="{ 'queue-slide': isFABMode, 'queue-open': isFABMode && queueOpen }"
+      />
     </div>
 
-    <button v-if="isFABMode" class="fab-btn" @click="queueOpen = !queueOpen">
+    <button v-if="isFABMode && !isPokedex" class="fab-btn" @click="queueOpen = !queueOpen">
       <span>📦</span>
       <span v-if="queueOpen" class="fab-close">✕</span>
     </button>
@@ -68,10 +93,10 @@ const handleSearchSelect = (entry) => {
         <span class="tab-label">메뉴</span>
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'main' }" @click="handleTabClick('main')">
-        <span class="tab-icon">⚒️</span>
-        <span class="tab-label">제작</span>
+        <span class="tab-icon">{{ isPokedex ? '📖' : '⚒️' }}</span>
+        <span class="tab-label">{{ isPokedex ? '도감' : '제작' }}</span>
       </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'queue' }" @click="handleTabClick('queue')">
+      <button v-if="!isPokedex" class="tab-btn" :class="{ active: activeTab === 'queue' }" @click="handleTabClick('queue')">
         <span class="tab-icon">📦</span>
         <span class="tab-label">큐</span>
       </button>
@@ -80,13 +105,12 @@ const handleSearchSelect = (entry) => {
 </template>
 
 <style scoped>
-/* 🌟 핵심 수정: 100vh -> 100dvh 로 변경하고 화면 바깥으로 밀리는 것 방지 */
 .app-layout {
   display: flex;
   flex-direction: column;
-  height: 100dvh; 
+  height: 100dvh;
   width: 100vw;
-  overflow: hidden; 
+  overflow: hidden;
   background: var(--bg-primary);
   position: relative;
 }
@@ -105,12 +129,11 @@ const handleSearchSelect = (entry) => {
   min-height: 0;
 }
 
-/* 🌟 핵심 수정: 여기도 100vh -> 100dvh */
 .queue-slide {
   position: fixed !important;
   top: 0;
   right: 0;
-  height: 100dvh !important; 
+  height: 100dvh !important;
   width: 320px;
   transform: translateX(100%);
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -175,9 +198,7 @@ const handleSearchSelect = (entry) => {
   transition: color 0.15s;
 }
 
-.tab-btn.active {
-  color: var(--accent);
-}
+.tab-btn.active { color: var(--accent); }
 
 .tab-btn .tab-icon {
   font-size: 20px;
@@ -185,9 +206,7 @@ const handleSearchSelect = (entry) => {
   transition: transform 0.15s;
 }
 
-.tab-btn.active .tab-icon {
-  transform: scale(1.15);
-}
+.tab-btn.active .tab-icon { transform: scale(1.15); }
 
 .tab-label {
   font-size: 10px;
@@ -195,7 +214,5 @@ const handleSearchSelect = (entry) => {
   letter-spacing: 0.3px;
 }
 
-.tab-btn.active .tab-label {
-  font-weight: 800;
-}
+.tab-btn.active .tab-label { font-weight: 800; }
 </style>

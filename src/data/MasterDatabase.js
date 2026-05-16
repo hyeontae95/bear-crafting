@@ -16,7 +16,7 @@ export const MasterDatabase = {
                 ]
             },
             {
-                itemName: "기본 접착제",
+                itemName: "접착제",
                 criticalSuccessQuantity: 16,
                 additionalSuccessQuantity: 12,
                 normalSuccessQuantity: 8,
@@ -149,7 +149,7 @@ export const MasterDatabase = {
                 ]
             },
             {
-                itemName: "유리병",
+                itemName: "음료병",
                 criticalSuccessQuantity: 0,
                 additionalSuccessQuantity: 0,
                 normalSuccessQuantity: 8,
@@ -423,7 +423,7 @@ export const MasterDatabase = {
                 ]
             },
             {
-                itemName: "스컬웰의 악의 구술",
+                itemName: "스컬웹의 악의 구슬",
                 criticalSuccessQuantity: 3,
                 additionalSuccessQuantity: 2,
                 normalSuccessQuantity: 1,
@@ -436,12 +436,12 @@ export const MasterDatabase = {
                 ]
             },
             {
-                itemName: "불꽃 감옥 구술",
+                itemName: "불꽃 감옥 구슬",
                 criticalSuccessQuantity: 3,
                 additionalSuccessQuantity: 2,
                 normalSuccessQuantity: 1,
                 requiredMaterials: [
-                    { materialName: "연마가루", requiredQuantity: 1, sourceCategory: "blacksmith" },
+                    { materialName: "연마 가루", requiredQuantity: 1, sourceCategory: "blacksmith" },
                     { materialName: "실종된 사냥꾼 고글", requiredQuantity: 2, sourceCategory: "hunter" },
                     { materialName: "공예품 끌", requiredQuantity: 1, sourceCategory: "blacksmith" },
                     { materialName: "곰백토", requiredQuantity: 2, sourceCategory: "blacksmith" },
@@ -462,7 +462,7 @@ export const MasterDatabase = {
                 ]
             },
             {
-                itemName: "환 약",
+                itemName: "환약",
                 criticalSuccessQuantity: 3,
                 additionalSuccessQuantity: 2,
                 normalSuccessQuantity: 1,
@@ -537,7 +537,7 @@ export const MasterDatabase = {
                     { materialName: "체인", requiredQuantity: 1, sourceCategory: "blacksmith" },
                     { materialName: "고대의 맘모스 뿔", requiredQuantity: 2, sourceCategory: "hunter" },
                     { materialName: "공예품 끌", requiredQuantity: 2, sourceCategory: "blacksmith" },
-                    { materialName: "연마가루", requiredQuantity: 2, sourceCategory: "blacksmith" },
+                    { materialName: "연마 가루", requiredQuantity: 2, sourceCategory: "blacksmith" },
                     { materialName: "야생사냥꾼 증표 II", requiredQuantity: 1, sourceCategory: "hunter" }
                 ]
             },
@@ -547,7 +547,7 @@ export const MasterDatabase = {
                 additionalSuccessQuantity: 2,
                 normalSuccessQuantity: 1,
                 requiredMaterials: [
-                    { materialName: "보존 코어소자", requiredQuantity: 1, sourceCategory: "blacksmith" },
+                    { materialName: "보존 코어 소자", requiredQuantity: 1, sourceCategory: "blacksmith" },
                     { materialName: "고대의 맘모스 뿔", requiredQuantity: 2, sourceCategory: "hunter" },
                     { materialName: "공예품 끌", requiredQuantity: 2, sourceCategory: "blacksmith" },
                     { materialName: "베어 크리스탈", requiredQuantity: 2, sourceCategory: "blacksmith" },
@@ -555,7 +555,7 @@ export const MasterDatabase = {
                 ]
             },
             {
-                itemName: "루미너트 루프",
+                itemName: "루미너스 루프",
                 criticalSuccessQuantity: 3,
                 additionalSuccessQuantity: 2,
                 normalSuccessQuantity: 1,
@@ -628,7 +628,7 @@ export const MasterDatabase = {
                 normalSuccessQuantity: 1,
                 requiredMaterials: [
                     { materialName: "무두질된 영혼 가죽", requiredQuantity: 1, sourceCategory: "blacksmith" },
-                    { materialName: "보존 코어소자", requiredQuantity: 2, sourceCategory: "blacksmith" },
+                    { materialName: "보존 코어 소자", requiredQuantity: 2, sourceCategory: "blacksmith" },
                     { materialName: "어둠의 정령의 부서진 스태프", requiredQuantity: 1, sourceCategory: "hunter" },
                     { materialName: "공예품 끌", requiredQuantity: 4, sourceCategory: "blacksmith" },
                     { materialName: "물의 결정체", requiredQuantity: 32, sourceCategory: "hunter" }
