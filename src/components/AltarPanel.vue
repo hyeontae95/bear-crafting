@@ -5,6 +5,7 @@ import { MasterDatabase } from '../data/MasterDatabase.js'
 import { getItemImage } from '../data/imageMap.js'
 import SimulationModal from './SimulationModal.vue'
 import SimulationInline from './SimulationInline.vue'
+import { useAltar } from '../composables/useAltar.js'
 
 // ════════════════════════════════════════
 // 등급 정의
@@ -28,8 +29,7 @@ const allItems = Object.entries(MasterDatabase.crafter).flatMap(([grade, items])
 // ════════════════════════════════════════
 // 상태
 // ════════════════════════════════════════
-const prestige = ref('none') // none / bronze / silver / gold / lapis
-const weeklyList = ref([]) // { item, grade, count }
+const { weeklyList, prestige } = useAltar()
 const simItem = ref(null)
 
 const PRESTIGE_OPTIONS = [

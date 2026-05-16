@@ -996,8 +996,6 @@ function formatNeeded(count) {
     flex-wrap: wrap;
 }
 
-.eff-info-item {}
-
 .eff-info-label {
     font-size: 11px;
     color: var(--text-tertiary);
