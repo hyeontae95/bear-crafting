@@ -173,7 +173,14 @@ const totalMaterials = computed(() => {
             map[key].total += mat.requiredQuantity * count
         }
     }
-    return Object.values(map).sort((a, b) => a.sourceCategory.localeCompare(b.sourceCategory))
+    // 카테고리 순서 정의
+    const ORDER = ['blacksmith', 'crafter', 'farmer', 'fisher', 'lumberjack', 'miner', 'hunter', 'vanilla']
+    return Object.values(map).sort((a, b) => {
+        const ai = ORDER.indexOf(a.sourceCategory)
+        const bi = ORDER.indexOf(b.sourceCategory)
+        if (ai !== bi) return ai - bi
+        return a.materialName.localeCompare(b.materialName)
+    })
 })
 
 const SOURCE_LABEL = {
@@ -346,15 +353,25 @@ function applySimCount(count) {
             <!-- 필요 재료 합산 -->
             <div v-if="weeklyList.length > 0 && totalMaterials.length > 0" class="materials-section">
                 <div class="materials-title">📦 전체 필요 재료</div>
-                <div class="materials-grid">
-                    <div v-for="mat in totalMaterials" :key="mat.materialName" class="mat-chip">
-                        <span class="mat-source"
-                            :style="{ background: SOURCE_COLOR[mat.sourceCategory] + '22', color: SOURCE_COLOR[mat.sourceCategory] }">
-                            {{ SOURCE_LABEL[mat.sourceCategory] || mat.sourceCategory }}
-                        </span>
-                        <span class="mat-name">{{ mat.materialName }}</span>
-                        <span class="mat-count">{{ fmt(mat.total) }}개</span>
-                    </div>
+                <div class="materials-by-category">
+                    <template v-for="cat in ['blacksmith', 'crafter', 'farmer', 'fisher', 'lumberjack', 'miner', 'hunter', 'vanilla']" :key="cat">
+                        <div v-if="totalMaterials.some(m => m.sourceCategory === cat)" class="mat-category-group">
+                            <div class="mat-category-label"
+                                :style="{ background: SOURCE_COLOR[cat] + '22', color: SOURCE_COLOR[cat] }">
+                                {{ SOURCE_LABEL[cat] || cat }}
+                            </div>
+                            <div class="mat-chips">
+                                <div v-for="mat in totalMaterials.filter(m => m.sourceCategory === cat)"
+                                    :key="mat.materialName"
+                                    class="mat-chip" :class="{ 'mat-clickable': canSimMat(mat) }"
+                                    @click="canSimMat(mat) ? openMatSim(mat) : null">
+                                    <span class="mat-name">{{ mat.materialName }}</span>
+                                    <span class="mat-count">{{ fmt(mat.total) }}개</span>
+                                    <span v-if="canSimMat(mat)" class="mat-sim-icon">🎲</span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -1011,28 +1028,29 @@ function applySimCount(count) {
     letter-spacing: 0.5px;
 }
 
-.materials-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+.materials-by-category { display: flex; flex-direction: column; gap: 12px; }
+
+.mat-category-group { display: flex; align-items: flex-start; gap: 10px; }
+
+.mat-category-label {
+    font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 6px;
+    white-space: nowrap; flex-shrink: 0;
+    align-self: flex-start; margin-top: 2px;
 }
+
+.mat-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 
 .mat-chip {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    display: flex; align-items: center; gap: 6px;
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 10px;
+    border-radius: 8px; padding: 5px 10px;
     font-size: 12px;
 }
-
 .mat-source {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 4px;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px;
     white-space: nowrap;
 }
 
