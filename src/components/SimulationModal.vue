@@ -251,10 +251,15 @@ const canSimulate = (material) => {
 // 64개 단위로 변환: "1,280개 (20세트)"
 const formatStacks = (count) => {
   if (count < 64) return `${count}개`
-  const stacks = Math.floor(count / 64)
-  const remainder = count % 64
-  if (remainder === 0) return `${count.toLocaleString()}개 (${stacks}세트)`
-  return `${count.toLocaleString()}개 (${stacks}세트 ${remainder}개)`
+  const shulker = Math.floor(count / 1728)
+  const r1 = count % 1728
+  const stacks = Math.floor(r1 / 64)
+  const remainder = r1 % 64
+  const parts = []
+  if (shulker > 0) parts.push(`${shulker}셜커`)
+  if (stacks > 0) parts.push(`${stacks}세트`)
+  if (remainder > 0) parts.push(`${remainder}개`)
+  return `${count.toLocaleString()}개 (${parts.join(' ')})`
 }
 </script>
 
