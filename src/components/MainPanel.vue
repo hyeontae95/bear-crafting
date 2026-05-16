@@ -136,7 +136,8 @@ const modalTier = computed(() => selectedItem.value?._tier || props.category.tie
 }
 
 .panel-header {
-  padding: 24px 32px;
+  min-height: var(--header-height);
+  padding: 0 28px;
   display: flex;
   justify-content: space-between;
   align-items: center;

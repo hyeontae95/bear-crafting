@@ -92,14 +92,17 @@ const formatStacks = (count) => {
 
     <template v-else>
       <div class="queue-list">
-        <div v-for="q in queue" :key="q.itemName" class="queue-item" :class="{ expanded: expandedItem === q.itemName, invalid: !isChancesValid(q) }">
+        <div v-for="q in queue" :key="q.itemName" class="queue-item"
+          :class="{ expanded: expandedItem === q.itemName, invalid: !isChancesValid(q) }">
           <div class="queue-header" @click="toggleExpand(q.itemName)">
             <div class="expand-arrow">{{ expandedItem === q.itemName ? '▼' : '▶' }}</div>
-            <img v-if="getItemImage(q.itemName)" :src="getItemImage(q.itemName)" :alt="q.itemName" class="queue-item-image" @error="$event.target.style.display='none'" />
+            <img v-if="getItemImage(q.itemName)" :src="getItemImage(q.itemName)" :alt="q.itemName"
+              class="queue-item-image" @error="$event.target.style.display = 'none'" />
             <div class="item-name">{{ q.itemName }}</div>
             <div class="qty-control" @click.stop>
               <button class="qty-btn" @click="setQuantity(q.itemName, q.quantity - 1)">−</button>
-              <input type="number" :value="q.quantity" min="1" class="qty-input" @change="setQuantity(q.itemName, Number($event.target.value))" />
+              <input type="number" :value="q.quantity" min="1" class="qty-input"
+                @change="setQuantity(q.itemName, Number($event.target.value))" />
               <button class="qty-btn" @click="setQuantity(q.itemName, q.quantity + 1)">+</button>
             </div>
             <button class="remove-btn" @click.stop="remove(q.itemName)">✕</button>
@@ -109,10 +112,12 @@ const formatStacks = (count) => {
             <template v-else>
               <div v-for="outcome in buildOutcomeKeys(q)" :key="outcome.key" class="chance-row">
                 <span class="chance-label" :style="{ color: outcome.color }">{{ outcome.label }}</span>
-                <input type="number" step="0.01" min="0" max="100" :value="q.chances[outcome.key] || ''" class="chance-input" placeholder="0" @input="updateChance(q, outcome.key, $event.target.value)" />
+                <input type="number" step="0.01" min="0" max="100" :value="q.chances[outcome.key] || ''"
+                  class="chance-input" placeholder="0" @input="updateChance(q, outcome.key, $event.target.value)" />
                 <span class="chance-suffix">% → {{ outcome.qty }}개</span>
               </div>
-              <div class="chance-total" :class="{ invalid: !isChancesValid(q) }">합계: {{ totalChance(q).toFixed(2) }}%</div>
+              <div class="chance-total" :class="{ invalid: !isChancesValid(q) }">합계: {{ totalChance(q).toFixed(2) }}%
+              </div>
             </template>
           </div>
         </div>
@@ -127,7 +132,8 @@ const formatStacks = (count) => {
         <div v-for="(mats, cat) in groupedMaterials" :key="cat" class="material-group">
           <div class="group-header" :style="{ color: sourceCategoryColor(cat) }">{{ sourceCategoryLabel(cat) }}</div>
           <div v-for="m in mats" :key="m.materialName" class="material-row">
-            <img v-if="getItemImage(m.materialName)" :src="getItemImage(m.materialName)" :alt="m.materialName" class="mat-image" @error="$event.target.style.display='none'" />
+            <img v-if="getItemImage(m.materialName)" :src="getItemImage(m.materialName)" :alt="m.materialName"
+              class="mat-image" @error="$event.target.style.display = 'none'" />
             <span v-else class="mat-image-placeholder">📦</span>
             <span class="material-name">{{ m.materialName }}</span>
             <span class="material-qty">{{ formatStacks(m.totalRequired) }}</span>
@@ -150,19 +156,73 @@ const formatStacks = (count) => {
   height: 100%;
 }
 
-.panel-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-.panel-header h2 { font-size: 15px; font-weight: 700; }
-.clear-btn { background: transparent; color: var(--text-tertiary); font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); }
-.clear-btn:hover { color: var(--job-hunter); border-color: var(--job-hunter); }
+.panel-header {
+  min-height: var(--header-height);
+  padding: 0 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
 
-.empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-tertiary); gap: 8px; }
-.empty-icon { font-size: 36px; opacity: 0.3; }
-.empty-state small { font-size: 11px; opacity: 0.7; }
+.panel-header h2 {
+  font-size: 15px;
+  font-weight: 700;
+}
 
-.queue-list { padding: 12px; overflow-y: auto; border-bottom: 1px solid var(--border); max-height: 50vh; }
+.clear-btn {
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
 
-.queue-item { background: var(--bg-tertiary); border-radius: 10px; margin-bottom: 6px; border: 1px solid transparent; transition: border-color 0.15s; }
-.queue-item.invalid { border-color: rgba(239,68,68,0.3); }
+.clear-btn:hover {
+  color: var(--job-hunter);
+  border-color: var(--job-hunter);
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  gap: 8px;
+}
+
+.empty-icon {
+  font-size: 36px;
+  opacity: 0.3;
+}
+
+.empty-state small {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.queue-list {
+  padding: 12px;
+  overflow-y: auto;
+  border-bottom: 1px solid var(--border);
+  max-height: 50vh;
+}
+
+.queue-item {
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+  margin-bottom: 6px;
+  border: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.queue-item.invalid {
+  border-color: rgba(239, 68, 68, 0.3);
+}
 
 .queue-header {
   display: grid;
@@ -172,34 +232,175 @@ const formatStacks = (count) => {
   padding: 10px;
   cursor: pointer;
 }
-.queue-header:hover { background: var(--bg-hover); border-radius: 10px; }
-.expand-arrow { font-size: 8px; color: var(--text-tertiary); }
-.item-name { font-size: 13px; font-weight: 600; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.qty-control { display: flex; align-items: center; gap: 2px; }
-.qty-btn { background: var(--bg-primary); color: var(--text-secondary); width: 22px; height: 22px; border-radius: 4px; font-size: 12px; font-weight: 700; }
-.qty-btn:hover { background: var(--accent); color: white; }
-.qty-input { background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); width: 38px; height: 22px; text-align: center; border-radius: 4px; font-size: 12px; font-weight: 600; }
+.queue-header:hover {
+  background: var(--bg-hover);
+  border-radius: 10px;
+}
 
-.remove-btn { background: transparent; color: var(--text-tertiary); width: 24px; height: 22px; border-radius: 4px; font-size: 12px; }
-.remove-btn:hover { background: rgba(239,68,68,0.15); color: var(--job-hunter); }
+.expand-arrow {
+  font-size: 8px;
+  color: var(--text-tertiary);
+}
 
-.queue-detail { padding: 4px 12px 12px; border-top: 1px solid var(--border); }
-.tool-note { font-size: 11px; color: var(--text-tertiary); padding: 8px; text-align: center; }
-.chance-row { display: grid; grid-template-columns: 50px 1fr auto; gap: 6px; align-items: center; margin-top: 6px; }
-.chance-label { font-size: 11px; font-weight: 700; }
-.chance-input { background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 4px; padding: 4px 8px; font-size: 12px; font-weight: 600; width: 100%; }
-.chance-input:focus { border-color: var(--accent); }
-.chance-suffix { font-size: 10px; color: var(--text-tertiary); white-space: nowrap; }
-.chance-total { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-secondary); text-align: right; }
-.chance-total.invalid { color: var(--job-hunter); }
+.item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-.materials-block { flex: 1; overflow-y: auto; padding: 16px; }
-.materials-header { font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-.incomplete-warn { font-size: 10px; color: var(--job-hunter); text-transform: none; letter-spacing: normal; font-weight: 500; }
-.no-materials { font-size: 11px; color: var(--text-tertiary); text-align: center; padding: 20px; }
-.material-group { margin-bottom: 12px; }
-.group-header { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+.qty-control {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.qty-btn {
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.qty-btn:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.qty-input {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  width: 38px;
+  height: 22px;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.remove-btn {
+  background: transparent;
+  color: var(--text-tertiary);
+  width: 24px;
+  height: 22px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.remove-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--job-hunter);
+}
+
+.queue-detail {
+  padding: 4px 12px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.tool-note {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  padding: 8px;
+  text-align: center;
+}
+
+.chance-row {
+  display: grid;
+  grid-template-columns: 50px 1fr auto;
+  gap: 6px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.chance-label {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.chance-input {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  width: 100%;
+}
+
+.chance-input:focus {
+  border-color: var(--accent);
+}
+
+.chance-suffix {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.chance-total {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.chance-total.invalid {
+  color: var(--job-hunter);
+}
+
+.materials-block {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.materials-header {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.incomplete-warn {
+  font-size: 10px;
+  color: var(--job-hunter);
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 500;
+}
+
+.no-materials {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 20px;
+}
+
+.material-group {
+  margin-bottom: 12px;
+}
+
+.group-header {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
 
 .material-row {
   display: grid;
@@ -209,12 +410,41 @@ const formatStacks = (count) => {
   font-size: 12px;
   padding: 3px 4px;
 }
-.material-name { color: var(--text-primary); }
-.material-qty { color: var(--text-secondary); font-weight: 600; }
 
-.queue-item-image { width: 24px; height: 24px; object-fit: contain; image-rendering: pixelated; flex-shrink: 0; }
-.mat-image { width: 20px; height: 20px; object-fit: contain; image-rendering: pixelated; flex-shrink: 0; }
-.mat-image-placeholder { font-size: 10px; opacity: 0.3; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+.material-name {
+  color: var(--text-primary);
+}
+
+.material-qty {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.queue-item-image {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.mat-image {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.mat-image-placeholder {
+  font-size: 10px;
+  opacity: 0.3;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /* ── 모바일 세로 ── */
 @media (max-width: 767px) {
@@ -223,7 +453,10 @@ const formatStacks = (count) => {
     border-left: none;
     border-top: 1px solid var(--border);
   }
-  .queue-list { max-height: 40vh; }
+
+  .queue-list {
+    max-height: 40vh;
+  }
 }
 
 /* ── 태블릿/FAB모드 ── */

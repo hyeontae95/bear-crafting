@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar.vue";
 import MainPanel from "./components/MainPanel.vue";
 import QueuePanel from "./components/QueuePanel.vue";
 import PokedexPanel from "./components/PokedexPanel.vue";
+import AltarPanel from './components/AltarPanel.vue'
 
 const currentCategory = ref({ job: "blacksmith", tier: "level0" });
 const externalSelect = ref(null);
@@ -27,7 +28,8 @@ const desktopQuery = window.matchMedia('(min-width: 1280px)');
 portraitQuery.addEventListener('change', () => { isPortrait.value = getIsPortrait(); });
 desktopQuery.addEventListener('change', () => { isDesktop.value = getIsDesktop(); });
 
-const isPokedex = computed(() => currentCategory.value.job === 'pokedex');
+const isPokedex = computed(() => currentCategory.value.job === 'pokedex')
+const isAltar = computed(() => currentCategory.value.job === 'altar')
 
 const handleTabClick = (tab) => {
   if (isPortrait.value && activeTab.value === tab && tab !== 'main') {
@@ -62,17 +64,23 @@ const handleSearchSelect = (entry) => {
 
       <!-- 도감 패널 -->
       <PokedexPanel
-        v-if="isPokedex && (!isPortrait || activeTab === 'main')"
-        class="panel-main"
-        :type="currentCategory.tier"
+          v-if="isPokedex && (!isPortrait || activeTab === 'main')"
+          class="panel-main"
+          :type="currentCategory.tier"
+      />
+
+      <!-- 제단 패널 -->
+      <AltarPanel
+          v-else-if="isAltar && (!isPortrait || activeTab === 'main')"
+          class="panel-main"
       />
 
       <!-- 제작 패널 -->
       <MainPanel
-        v-if="!isPokedex && (!isPortrait || activeTab === 'main')"
-        class="panel-main"
-        :category="currentCategory"
-        :auto-select="externalSelect"
+          v-else-if="!isPortrait || activeTab === 'main'"
+          class="panel-main"
+          :category="currentCategory"
+          :auto-select="externalSelect"
       />
 
       <QueuePanel
@@ -82,7 +90,7 @@ const handleSearchSelect = (entry) => {
       />
     </div>
 
-    <button v-if="isFABMode && !isPokedex" class="fab-btn" @click="queueOpen = !queueOpen">
+    <button v-if="isFABMode && !isPokedex && !isAltar" class="fab-btn" @click="queueOpen = !queueOpen">
       <span>📦</span>
       <span v-if="queueOpen" class="fab-close">✕</span>
     </button>
@@ -93,10 +101,10 @@ const handleSearchSelect = (entry) => {
         <span class="tab-label">메뉴</span>
       </button>
       <button class="tab-btn" :class="{ active: activeTab === 'main' }" @click="handleTabClick('main')">
-        <span class="tab-icon">{{ isPokedex ? '📖' : '⚒️' }}</span>
-        <span class="tab-label">{{ isPokedex ? '도감' : '제작' }}</span>
+        <span class="tab-icon">{{ isPokedex ? '📖' : isAltar ? '🏛️' : '⚒️' }}</span>
+        <span class="tab-label">{{ isPokedex ? '도감' : isAltar ? '제단' : '제작' }}</span>
       </button>
-      <button v-if="!isPokedex" class="tab-btn" :class="{ active: activeTab === 'queue' }" @click="handleTabClick('queue')">
+      <button v-if="!isPokedex && !isAltar" class="tab-btn" :class="{ active: activeTab === 'queue' }" @click="handleTabClick('queue')">
         <span class="tab-icon">📦</span>
         <span class="tab-label">큐</span>
       </button>

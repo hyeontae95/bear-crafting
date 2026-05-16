@@ -126,6 +126,26 @@ const clearSearch = () => {
       <!-- 구분선 -->
       <div class="divider" />
 
+      <!-- 제단 메뉴 -->
+      <div class="section">
+          <div class="section-label" style="color: #f59e0b">🏛️ 제단</div>
+          <div class="tier-list">
+              <button
+                  class="tier-btn"
+                  :class="{ active: isActive('altar', 'main') }"
+                  style="--job-color: #f59e0b"
+                  @click="emit('select', { job: 'altar', tier: 'main' })"
+              >
+                  제단 점수 계산기
+              </button>
+          </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="divider" />
+
+      <!-- 도감 메뉴 -->
+
       <!-- 도감 메뉴 -->
       <div v-for="section in pokedexMenu" :key="section.job" class="section">
         <div class="section-label" :style="{ color: section.color }">{{ section.label }}</div>
@@ -155,10 +175,11 @@ const clearSearch = () => {
   flex-shrink: 0;
   border-right: 1px solid var(--border);
   height: 100%;
+  overflow: hidden;
 }
 
 .sidebar-header {
-  padding: 20px 20px 12px;
+  padding: 14px 20px 10px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -176,6 +197,7 @@ const clearSearch = () => {
 }
 
 .search-box {
+  margin-top: 12px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -248,23 +270,24 @@ const clearSearch = () => {
   flex: 1;
   overflow-y: auto;
   padding: 16px 12px;
+  min-height: 0;
 }
 .section { margin-bottom: 24px; }
 .section-label {
   font-size: 16px;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
-  padding: 0 8px 8px;
+  padding: 0 8px 4px;
 }
 .tier-list { display: flex; flex-direction: column; gap: 2px; }
 .tier-btn {
   background: transparent;
   color: var(--text-secondary);
   text-align: left;
-  padding: 9px 12px;
+  padding: 8px 12px;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   border-left: 2px solid transparent;
 }
@@ -291,7 +314,7 @@ const clearSearch = () => {
 .divider {
   height: 1px;
   background: var(--border);
-  margin: 0 8px 24px;
+  margin: 0 8px 16px;
 }
 
 /* ── 모바일 세로 ── */

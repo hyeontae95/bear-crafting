@@ -38,6 +38,8 @@
   /* 테두리 */
   --border: #2d2e36;
   --border-focus: #8b5cf6;
+
+  --header-height: 60px;
 }
 
 * {

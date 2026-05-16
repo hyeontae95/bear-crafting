@@ -546,7 +546,8 @@ function formatNeeded(count) {
 
 /* ── 헤더 ── */
 .panel-header {
-    padding: 18px 28px;
+    min-height: var(--header-height);
+    padding: 0 28px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
