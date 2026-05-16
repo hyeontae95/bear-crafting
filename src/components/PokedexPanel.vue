@@ -396,9 +396,12 @@ function formatNeeded(count) {
                     <div class="lc-sub">숙련도 {{items.reduce((s, i) => s + i.stage, 0)}} / {{ items.length }}개 아이템</div>
                 </div>
                 <div class="total-cost-card">
-                    <div class="lc-label">목표 도감 레벨</div>
-                    <div class="lc-value" style="color:#38bdf8">{{ targetLevel }}<span class="lc-unit"> 레벨</span></div>
-                    <div class="lc-sub">목표 숙련도 {{ targetLevel * items.length }} / 부족 {{ Math.max(0, targetLevel * items.length - items.reduce((s,i) => s+i.stage, 0)) }}단계</div>
+                    <div class="lc-label">목표 단계 달성 시</div>
+                    <div class="lc-value" style="color:#38bdf8">
+                        {{ (items.reduce((s, i) => s + Number(i.entry.target), 0) / items.length).toFixed(2) }}
+                        <span class="lc-unit"> 레벨</span>
+                    </div>
+                    <div class="lc-sub">목표 숙련도 {{ items.reduce((s, i) => s + Number(i.entry.target), 0) }}</div>
                 </div>
                 <div class="total-cost-card" v-if="items.some(i => i.totalCost > 0)">
                     <div class="lc-label">목표까지 총 예상 비용</div>
