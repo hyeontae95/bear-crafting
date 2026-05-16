@@ -221,6 +221,31 @@ function applySimCount(count) {
     entry.count = count
     activeSimItem.value.count = count
 }
+
+function canSimMat(mat) {
+    return Object.values(MasterDatabase.blacksmith).flat().some(i => i.itemName === mat.materialName) ||
+        Object.values(MasterDatabase.crafter).flat().some(i => i.itemName === mat.materialName)
+}
+
+function openMatSim(mat) {
+    const bsEntry = Object.entries(MasterDatabase.blacksmith)
+        .find(([, arr]) => arr.some(i => i.itemName === mat.materialName))
+    const crEntry = Object.entries(MasterDatabase.crafter)
+        .find(([, arr]) => arr.some(i => i.itemName === mat.materialName))
+    if (bsEntry) {
+        simItem.value = {
+            item: bsEntry[1].find(i => i.itemName === mat.materialName),
+            job: 'blacksmith', tier: bsEntry[0],
+            initialTarget: mat.total
+        }
+    } else if (crEntry) {
+        simItem.value = {
+            item: crEntry[1].find(i => i.itemName === mat.materialName),
+            job: 'crafter', tier: crEntry[0],
+            initialTarget: mat.total
+        }
+    }
+}
 </script>
 
 <template>
@@ -308,10 +333,10 @@ function applySimCount(count) {
                         </td>
                         <td style="text-align:center">
                             <div class="count-ctrl">
-                                <button class="cnt-btn" @click="changeCount(idx, -1)">−</button>
+                                <button class="cnt-btn" @click.stop="changeCount(idx, -1)">−</button>
                                 <input type="number" class="cnt-input" :value="entry.count"
                                     @change="setCount(idx, $event.target.value)" min="1" max="64" />
-                                <button class="cnt-btn" @click="changeCount(idx, 1)"
+                                <button class="cnt-btn" @click.stop="changeCount(idx, 1)"
                                     :disabled="totalCount >= 64">+</button>
                             </div>
                         </td>
@@ -323,8 +348,8 @@ function applySimCount(count) {
                         </td>
                         <td style="text-align:center">
                             <div class="row-actions">
-                                <button class="sim-btn" @click="openSim(entry.item)" title="시뮬레이션">🎲</button>
-                                <button class="del-btn" @click="removeItem(idx)" title="삭제">✕</button>
+                                <button class="sim-btn" @click.stop="openSim(entry.item)" title="시뮬레이션">🎲</button>
+                                <button class="del-btn" @click.stop="removeItem(idx)" title="삭제">✕</button>
                             </div>
                         </td>
                     </tr>
