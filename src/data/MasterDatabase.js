@@ -299,7 +299,7 @@ export const MasterDatabase = {
                 normalSuccessItemName: "영혼 가죽",
                 requiredMaterials: [
                     { materialName: "고대의 맘모스 뿔", requiredQuantity: 2, sourceCategory: "hunter" },
-                    { materialName: "어둠의 정령의 부서진 스태프", requiredQuantity: 4, sourceCategory: "hunter" },
+                    { materialName: "어둠의 정령의 부서진 스태프", requiredQuantity: 2, sourceCategory: "hunter" },
                     { materialName: "영혼의 원소 정수", requiredQuantity: 32, sourceCategory: "hunter" }
                 ]
             }
